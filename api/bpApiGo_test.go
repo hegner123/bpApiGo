@@ -1,3 +1,3 @@
-package bpApiGo
+package main
 
 // Path: bpApiGo.go
