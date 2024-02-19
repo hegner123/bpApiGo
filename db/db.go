@@ -4,8 +4,6 @@ import (
 	"database/sql"
 	"log"
 	"os"
-
-	_ "github.com/lib/pq"
 )
 
 // ConnectDB connects to the database
@@ -16,3 +14,6 @@ func ConnectDB() *sql.DB {
 	}
 	return db
 }
+
+
+
