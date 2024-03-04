@@ -1,15 +1,20 @@
 package main
 
 import (
-	"database/sql"
-	"log"
+	"fmt"
+
 	"net/http"
-	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/hegner123/bpApiGo/db"
 )
 
+
 func main(){
+    fmt.Println("Starting the application...")
+    
+    db.DbInit()
+
 
     router := mux.NewRouter()
     router.HandleFunc("/api/v1/health", HealthHandler).Methods("GET")
@@ -17,42 +22,42 @@ func main(){
     router.HandleFunc("/api/v1/income", GetIncome).Methods("GET")
     router.HandleFunc("/api/v1/expense", GetExpense).Methods("GET")
 
-
-
-    http.ListenAndServe(":8080", router)
+    err := http.ListenAndServe(":8080", router)
+    if err != nil {
+        fmt.Println(err)
+    }
 }
 
 func HealthHandler(w http.ResponseWriter, r *http.Request) {
     w.WriteHeader(http.StatusOK)
-    w.Write([]byte("OK"))
+    _, err := w.Write([]byte("OK"))
+    if err != nil {
+        fmt.Println(err)
+    }
+
+    
 }
 
 func GetBalance(w http.ResponseWriter, r *http.Request) {
-    db := dbConnect()
-    defer db.Close()
+    sqlDataBase := db.DbConnect()
+    defer db.Close(sqlDataBase)
     // ...
 }
 
 func GetIncome(w http.ResponseWriter, r *http.Request) {
-    db := dbConnect()
-    defer db.Close()
+    sqlDataBase := db.DbConnect()
+    defer db.Close(sqlDataBase)
     // ...
 }
 
 func GetExpense(w http.ResponseWriter, r *http.Request) {
-    db := dbConnect()
-    defer db.Close()
+    sqlDataBase := db.DbConnect()
+    defer db.Close(sqlDataBase)
     // ...
 }
 
 
 
-func dbConnect() *sql.DB {
-    db, err := sql.Open(os.Getenv("DB_URL"), os.Getenv("DB_NAME"))
-    if err != nil {
-        log.Fatalf("Error connecting to database: %s", err)
-    }
-    return db
-}
+
 
 
